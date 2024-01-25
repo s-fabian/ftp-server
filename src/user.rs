@@ -37,6 +37,8 @@ impl User {
         self.password.trim() == password.trim()
     }
 
+    pub fn name_ref(&self) -> &str { &self.name }
+
     pub fn name_cloned(&self) -> String { self.name.clone() }
 }
 

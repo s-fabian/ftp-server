@@ -7,6 +7,7 @@ use std::{
 use async_trait::async_trait;
 use cfg_if::cfg_if;
 use libunftp::storage::{Error, ErrorKind, Fileinfo, Metadata, Result, StorageBackend};
+use log::{info, warn};
 use tokio::io::AsyncSeekExt;
 
 use crate::user::User;
@@ -101,6 +102,8 @@ impl Filesystem {
     async fn full_path(&self, user: &User, path: impl AsRef<Path>) -> ResolveRes {
         let path = path.as_ref();
         let Some(path) = clean(path) else {
+            info!("{} tried to access outer directories", user.name_ref());
+
             return ResolveRes::Error(Error::new(
                 ErrorKind::PermissionDenied,
                 String::from("Error: no parent parent parent"),
@@ -115,6 +118,8 @@ impl Filesystem {
         }
 
         let Some(Component::Normal(first_dir)) = components.first() else {
+            info!("{} tried to enter an invalid path", user.name_ref());
+
             return ResolveRes::Error(Error::new(
                 ErrorKind::PermissionDenied,
                 String::from("Error: invalid path"),
@@ -126,6 +131,8 @@ impl Filesystem {
             return if virtual_path.is_empty() {
                 ResolveRes::Root(user.accesses())
             } else {
+                info!("{} tried to enter an invalid path", user.name_ref());
+
                 ResolveRes::Error(Error::new(
                     ErrorKind::PermissionDenied,
                     String::from("Error: invalid path"),
@@ -153,6 +160,11 @@ impl Filesystem {
                 ResolveRes::Write(full_path, target_path.path.clone())
             }
         } else {
+            warn!(
+                "{} tried to upload, got wrong dir: {full_path:?}",
+                user.name_ref()
+            );
+
             ResolveRes::Error(Error::from(ErrorKind::PermanentFileNotAvailable))
         }
     }
@@ -166,7 +178,7 @@ impl StorageBackend<User> for Filesystem {
         libunftp::storage::FEATURE_RESTART | libunftp::storage::FEATURE_SITEMD5
     }
 
-    #[tracing_attributes::instrument]
+    // #[tracing_attributes::instrument]
     async fn metadata<P: AsRef<Path> + Send + Debug>(
         &self,
         user: &User,
@@ -180,8 +192,7 @@ impl StorageBackend<User> for Filesystem {
         Ok(Meta { inner: fs_meta })
     }
 
-    #[allow(clippy::type_complexity)]
-    #[tracing_attributes::instrument]
+    // #[tracing_attributes::instrument]
     async fn list<P>(
         &self,
         user: &User,
@@ -229,7 +240,7 @@ impl StorageBackend<User> for Filesystem {
         Ok(fis)
     }
 
-    //#[tracing_attributes::instrument]
+    //# [tracing_attributes::instrument]
     async fn get<P: AsRef<Path> + Send + Debug>(
         &self,
         user: &User,
@@ -276,7 +287,7 @@ impl StorageBackend<User> for Filesystem {
         Ok(bytes_copied)
     }
 
-    #[tracing_attributes::instrument]
+    // #[tracing_attributes::instrument]
     async fn del<P: AsRef<Path> + Send + Debug>(
         &self,
         user: &User,
@@ -288,7 +299,7 @@ impl StorageBackend<User> for Filesystem {
             .map_err(|error: std::io::Error| error.into())
     }
 
-    #[tracing_attributes::instrument]
+    // #[tracing_attributes::instrument]
     async fn mkd<P: AsRef<Path> + Send + Debug>(
         &self,
         user: &User,
@@ -299,7 +310,7 @@ impl StorageBackend<User> for Filesystem {
             .map_err(|error: std::io::Error| error.into())
     }
 
-    #[tracing_attributes::instrument]
+    // #[tracing_attributes::instrument]
     async fn rename<P: AsRef<Path> + Send + Debug>(
         &self,
         user: &User,
@@ -328,7 +339,7 @@ impl StorageBackend<User> for Filesystem {
         }
     }
 
-    #[tracing_attributes::instrument]
+    // #[tracing_attributes::instrument]
     async fn rmd<P: AsRef<Path> + Send + Debug>(
         &self,
         user: &User,
@@ -340,7 +351,7 @@ impl StorageBackend<User> for Filesystem {
             .map_err(|error: std::io::Error| error.into())
     }
 
-    #[tracing_attributes::instrument]
+    // #[tracing_attributes::instrument]
     async fn cwd<P: AsRef<Path> + Send + Debug>(
         &self,
         user: &User,

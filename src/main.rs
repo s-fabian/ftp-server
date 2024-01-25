@@ -7,7 +7,7 @@ mod handler;
 mod user;
 
 pub use std::error::Error as StdError;
-use std::sync::Arc;
+use std::{net::SocketAddr, sync::Arc};
 
 use libunftp::Server;
 
@@ -21,6 +21,8 @@ pub type BoxedStdError = Box<dyn StdError>;
 
 fn main() -> Result<(), BoxedStdError> {
     let users = config::load("config.yaml")?;
+
+    pretty_env_logger::init();
 
     let rt = tokio::runtime::Runtime::new()?;
 
@@ -39,5 +41,11 @@ async fn run(users: Arc<UserMap>) -> Result<(), BoxedStdError> {
     .greeting("Welcome to my FTP server")
     .passive_ports(60000..65535);
 
-    Ok(server.listen("0.0.0.0:2121").await?)
+    let addr: SocketAddr = SocketAddr::from(([0, 0, 0, 0], 2121));
+
+    eprintln!("Starting on {addr}");
+    server.listen(addr.to_string()).await?;
+    eprintln!("Goodbye!");
+
+    Ok(())
 }
