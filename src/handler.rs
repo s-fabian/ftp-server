@@ -346,8 +346,14 @@ impl StorageBackend<User> for Filesystem {
         user: &User,
         path: P,
     ) -> Result<()> {
-        let full_path = self.full_path(user, path).await.read_ok()?;
-        tokio::fs::read_dir(full_path)
+        let dir: PathBuf = match self.full_path(user, path).await {
+            ResolveRes::Read(dir, ..) => dir,
+            ResolveRes::Write(dir, ..) => dir,
+            ResolveRes::Error(e) => return Err(e),
+            ResolveRes::Root(..) => return Ok(()),
+        };
+
+        tokio::fs::read_dir(dir)
             .await
             .map_err(|error: std::io::Error| error.into())
             .map(|_| ())
