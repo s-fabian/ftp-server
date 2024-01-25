@@ -2,7 +2,6 @@ use std::{sync::Arc, time::Duration};
 
 use async_trait::async_trait;
 use libunftp::auth::{AuthenticationError, Authenticator as LibAuthenticator};
-use log::info;
 use serde::Deserialize;
 use tokio::time::sleep;
 
