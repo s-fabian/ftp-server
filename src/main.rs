@@ -20,7 +20,7 @@ use crate::{
 pub type BoxedStdError = Box<dyn StdError>;
 
 fn main() -> Result<(), BoxedStdError> {
-    let users = config::load("../default-config.yaml")?;
+    let users = config::load("../config.yaml")?;
 
     let rt = tokio::runtime::Runtime::new()?;
 
