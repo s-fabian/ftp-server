@@ -1,8 +1,9 @@
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration};
 
 use async_trait::async_trait;
 use libunftp::auth::{AuthenticationError, Authenticator as LibAuthenticator};
 use serde::Deserialize;
+use tokio::time::sleep;
 
 use crate::user::{User, UserMap};
 
@@ -38,7 +39,6 @@ impl LibAuthenticator<User> for Authenticator {
             Err(AuthenticationError::BadUser)
         };
 
-        #[cfg(not(debug_assertions))]
         if res.is_err() {
             sleep(Duration::from_millis(1500)).await;
         }

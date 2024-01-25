@@ -11,6 +11,14 @@ use tokio::io::AsyncSeekExt;
 
 use crate::user::User;
 
+cfg_if! {
+    if #[cfg(target_os = "linux")] {
+        use std::os::linux::fs::MetadataExt;
+    } else if #[cfg(target_os = "unix")] {
+        use std::os::unix::fs::MetadataExt;
+    }
+}
+
 #[derive(Debug)]
 pub struct Filesystem;
 
