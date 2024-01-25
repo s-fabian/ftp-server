@@ -37,7 +37,7 @@ async fn run(users: Arc<UserMap>) -> Result<(), BoxedStdError> {
         }),
     )
     .greeting("Welcome to my FTP server")
-    .passive_ports(50000..65535);
+    .passive_ports(60000..65535);
 
     Ok(server.listen("0.0.0.0:2121").await?)
 }
