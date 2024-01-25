@@ -1,0 +1,9 @@
+- access:
+    example-read:
+      path: /home/dir/read
+      read_only: true
+    example-write:
+      path: /home/dir/write
+      read_only: false
+  name: user
+  password: very-strong-password

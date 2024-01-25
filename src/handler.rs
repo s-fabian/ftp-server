@@ -139,7 +139,7 @@ impl Filesystem {
         };
 
         if full_path.starts_with(&target_path.path) {
-            if full_path.ends_with(&target_path.name) || target_path.read_only {
+            if full_path.ends_with(&virtual_path) || target_path.read_only {
                 ResolveRes::Read(full_path, target_path.path.clone())
             } else {
                 ResolveRes::Write(full_path, target_path.path.clone())

@@ -1,0 +1,9 @@
+- access:
+    easy-snacks-read:
+      path: /Users/fabian/Pictures
+      read_only: true
+    easy-snacks-write:
+      path: /Users/fabian/Pictures
+      read_only: false
+  name: fabian
+  password: password

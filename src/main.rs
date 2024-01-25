@@ -2,7 +2,7 @@
 #![warn(unused_crate_dependencies)]
 
 mod auth;
-mod default_config;
+mod config;
 mod handler;
 mod user;
 
@@ -20,7 +20,7 @@ use crate::{
 pub type BoxedStdError = Box<dyn StdError>;
 
 fn main() -> Result<(), BoxedStdError> {
-    let users = default_config::default_config();
+    let users = config::load("../default-config.yaml")?;
 
     let rt = tokio::runtime::Runtime::new()?;
 
