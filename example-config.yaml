@@ -6,4 +6,4 @@
       path: /home/dir/write
       read_only: false
   name: user
-  password: very-strong-password
+  password: bfe516a25b5d5fea09e9d180b2a3f6911027af52253b596f7af7ba96bc0bfd5b

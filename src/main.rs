@@ -10,6 +10,7 @@ pub use std::error::Error as StdError;
 use std::{net::SocketAddr, sync::Arc};
 
 use libunftp::Server;
+use sha3::{Digest, Sha3_256};
 
 use crate::{
     auth::Authenticator,
@@ -19,8 +20,41 @@ use crate::{
 
 pub type BoxedStdError = Box<dyn StdError>;
 
+
+fn hash(pw: impl AsRef<str>) -> String {
+    // create a SHA3-256 object
+    let mut hasher = Sha3_256::new();
+
+    // write input message
+    hasher.update(pw.as_ref().as_bytes());
+
+    // read hash digest
+    let result = hasher.finalize();
+
+    // format as hex
+    format!("{:x}", result)
+}
+
+
 fn main() -> Result<(), BoxedStdError> {
-    let users = config::load("config.yaml")?;
+    let mut args = std::env::args().skip(1);
+    if args.next().is_some_and(|s| s == "sha3") {
+        let pw: String = args.collect::<Vec<String>>().join(" ");
+
+        if pw.is_empty() {
+            return Err("Error: no password provided".into());
+        }
+
+        let pw = hash(pw);
+
+        println!("Password is {pw}");
+
+        return Ok(());
+    }
+
+    let users = config::load(
+        std::env::var("FTP_CONFIG").unwrap_or(String::from("./config.yaml")),
+    )?;
 
     pretty_env_logger::init();
 

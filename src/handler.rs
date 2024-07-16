@@ -15,7 +15,7 @@ use crate::user::User;
 cfg_if! {
     if #[cfg(target_os = "linux")] {
         use std::os::linux::fs::MetadataExt;
-    } else if #[cfg(target_os = "unix")] {
+    } else if #[cfg(unix)] {
         use std::os::unix::fs::MetadataExt;
     }
 }
@@ -389,7 +389,7 @@ impl Metadata for Meta {
             if #[cfg(target_os = "linux")] {
                 self.inner.st_gid()
             }
-            else if #[cfg(target_os = "unix")] {
+            else if #[cfg(unix)] {
                 self.inner.gid()
             } else {
                 0
@@ -402,7 +402,7 @@ impl Metadata for Meta {
             if #[cfg(target_os = "linux")] {
                 self.inner.st_uid()
             }
-            else if #[cfg(target_os = "unix")] {
+            else if #[cfg(unix)] {
                 self.inner.uid()
             } else {
                 0
@@ -415,7 +415,7 @@ impl Metadata for Meta {
             if #[cfg(target_os = "linux")] {
                 self.inner.st_nlink()
             }
-            else if #[cfg(target_os = "unix")] {
+            else if #[cfg(unix)] {
                 self.inner.nlink()
             } else {
                 1

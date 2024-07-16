@@ -9,7 +9,7 @@ use crate::user::{User, UserMap};
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct ClientCertCredential {
-    pub allowed_cn: Option<String>,
+    // pub allowed_cn: Option<String>,
 }
 
 #[derive(Clone, Debug)]

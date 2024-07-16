@@ -7,6 +7,8 @@ use std::{
 use libunftp::auth::UserDetail;
 use serde::{Deserialize, Serialize};
 
+use crate::hash;
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct VirtualDir {
     // pub name: String,
@@ -34,7 +36,7 @@ impl User {
     }
 
     pub fn password_ok(&self, password: &str) -> bool {
-        self.password.trim() == password.trim()
+        self.password == hash(password)
     }
 
     pub fn name_ref(&self) -> &str { &self.name }
