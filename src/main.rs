@@ -20,7 +20,6 @@ use crate::{
 
 pub type BoxedStdError = Box<dyn StdError>;
 
-
 fn hash(pw: impl AsRef<str>) -> String {
     // create a SHA3-256 object
     let mut hasher = Sha3_256::new();
@@ -34,7 +33,6 @@ fn hash(pw: impl AsRef<str>) -> String {
     // format as hex
     format!("{:x}", result)
 }
-
 
 fn main() -> Result<(), BoxedStdError> {
     let mut args = std::env::args().skip(1);

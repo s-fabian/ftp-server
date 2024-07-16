@@ -35,9 +35,7 @@ impl User {
             .collect()
     }
 
-    pub fn password_ok(&self, password: &str) -> bool {
-        self.password == hash(password)
-    }
+    pub fn password_ok(&self, password: &str) -> bool { self.password == hash(password) }
 
     pub fn name_ref(&self) -> &str { &self.name }
 
